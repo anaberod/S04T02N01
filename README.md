@@ -4,85 +4,126 @@
 
 This project is part of the IT Academy curriculum. The task consists of creating a basic CRUD (Create, Read, Update, Delete) REST API using Spring Boot and H2 in-memory database.
 
-The goal is to build an application that manages a list of fruits, allowing users to add, update, retrieve, and delete fruit entries. The project uses the MVC architecture and implements a `GlobalExceptionHandler` for proper error handling.
+The application manages a list of fruits, allowing users to add, update, retrieve, and delete fruit entries. It follows MVC architecture, uses a DTO layer for communication, and implements centralized error handling with a `GlobalExceptionHandler` and a custom `FruitNotFoundException`.
 
 ## 💻 Technologies Used
 
 - Java 24
-- Spring Boot (latest stable version)
+- Spring Boot
 - Spring Web
 - Spring Data JPA
 - H2 Database
 - Maven
-- Postman (for API testing)
+- Postman (for testing)
 - Git & GitHub
 
 ## 📋 Requirements
 
-Before running the project, make sure you have the following installed:
+Make sure you have the following installed:
 
-- Java JDK 17+
-- Maven 3.8+
+- Java JDK 17 or higher
+- Maven 3.8 or higher
 - Git
-- IntelliJ IDEA or any Java IDE
+- IntelliJ IDEA or similar Java IDE
+
+## 📦 DTO Layer
+
+This project uses a **Data Transfer Object (DTO)** to decouple the internal `Fruit` model from the API layer. This ensures a cleaner, safer design and allows future changes to the internal model without affecting external clients.
+
+### 🔹 FruitDTO Fields
+
+```json
+{
+  "name": "Banana",
+  "amountKilos": 20
+}
+```
+
+The `id` is auto-generated and handled internally by the application. Clients never send it in POST/PUT requests.
 
 ## 🛠️ Installation
-
-Follow these steps to set up the project locally:
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/anaberod/S04T02N01.git
    ```
 
-2. Navigate into the project folder:
+2. Navigate into the project directory:
    ```bash
    cd S04T02N01
    ```
 
 3. Open the project in your IDE.
 
-4. Let Maven download the required dependencies (this happens automatically when you open the project).
+4. Let Maven download dependencies (happens automatically).
 
 ## ▶️ Execution
-
-To run the application:
 
 1. Locate the main class:
    ```
    cat.itacademy.s04.t02.n01.S04T02N01Application
    ```
 
-2. Run the class as a Java application.
+2. Run it as a Java application.
 
-3. Once started, the server will be running at:
+3. Once started, the server runs at:
    ```
    http://localhost:8080
    ```
 
-4. You can test the API using Postman with the following endpoints:
+## 📬 API Endpoints
 
-| Method | Endpoint                  | Description              |
-|--------|---------------------------|--------------------------|
-| POST   | `/fruit/add`              | Add a new fruit          |
-| PUT    | `/fruit/update`           | Update an existing fruit |
-| GET    | `/fruit/getOne/{id}`      | Get one fruit by ID      |
-| GET    | `/fruit/getAll`           | List all fruits          |
-| DELETE | `/fruit/delete/{id}`      | Delete a fruit by ID     |
+| Method | Endpoint          | Description             | Request Body            |
+|--------|-------------------|-------------------------|-------------------------|
+| POST   | `/fruit`          | Add a new fruit         | `FruitDTO`              |
+| PUT    | `/fruit/{id}`     | Update a fruit by ID    | `FruitDTO`              |
+| GET    | `/fruit`          | Get all fruits          |                         |
+| GET    | `/fruit/{id}`     | Get a fruit by ID       |                         |
+| DELETE | `/fruit/{id}`     | Delete a fruit by ID    |                         |
+
+### ✅ Example of `POST /fruit` or `PUT /fruit/{id}`
+
+```json
+{
+  "name": "Strawberry",
+  "amountKilos": 10
+}
+```
+
+### 🔄 Example Response for `GET /fruit/1`
+
+```json
+{
+  "name": "Strawberry",
+  "amountKilos": 10
+}
+```
+
+
 
 ## 🌐 Deployment
 
-This project is designed to run locally using an in-memory H2 database. However, it can be easily deployed to any Spring Boot-compatible environment or cloud service (Heroku, AWS, etc.) by configuring:
+The project runs locally using an H2 in-memory database. To deploy in production:
 
-- `application.properties`
-- A production-ready database (e.g., MySQL, PostgreSQL)
+- Switch to a persistent database like MySQL/PostgreSQL.
+- Update `application.properties` accordingly.
+- Deploy to Heroku, AWS, or other Spring Boot-compatible platforms.
+
+## ❗ Error Handling
+
+Handled with:
+- Custom exception: `FruitNotFoundException`
+- Global handler: `GlobalExceptionHandler`  
+  Returns:
+- `404 Not Found` if fruit ID doesn't exist
+- `500 Internal Server Error` for unexpected issues
 
 ## 🤝 Contributions
 
-Contributions are welcome! To contribute:
+You're welcome to contribute!
 
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature-name`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature-name`)
-5. Create a Pull Request
+1. Fork the repo
+2. Create a branch (`git checkout -b feature-name`)
+3. Commit (`git commit -m "Add feature"`)
+4. Push (`git push origin feature-name`)
+5. Open a Pull Request
